@@ -21,39 +21,35 @@ export default function LoginForm() {
     e.preventDefault()
     setIsLoading(true)
 
-    // In a real app, you would validate credentials against a backend
-    // This is a mock authentication for demonstration
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+    // Hardcoded credentials check
+    if (username === "jackson" && password === "Jack@123") {
+      // Store auth state
+      localStorage.setItem("isAuthenticated", "true")
+      localStorage.setItem("username", username)
 
-      if (username && password) {
-        // Store auth state (in a real app, use a proper auth solution)
-        localStorage.setItem("isAuthenticated", "true")
-        router.push("/dashboard")
-      } else {
-        toast({
-          title: "Authentication failed",
-          description: "Please enter both username and password",
-          variant: "destructive",
-        })
-      }
-    } catch (error) {
+      // Clear any previous document data
+      localStorage.removeItem("documentName")
+      localStorage.removeItem("documentUploaded")
+      localStorage.removeItem("signatureUrl")
+      localStorage.removeItem("signatureUploaded")
+
+      router.push("/upload-document")
+    } else {
       toast({
-        title: "Error",
-        description: "An error occurred during login",
+        title: "Authentication failed",
+        description: "Invalid username or password. Try jackson/Jack@123",
         variant: "destructive",
       })
-    } finally {
-      setIsLoading(false)
     }
+
+    setIsLoading(false)
   }
 
   return (
-    <Card>
+    <Card className="shadow-lg border-gray-200">
       <CardHeader>
         <CardTitle>Login</CardTitle>
-        <CardDescription>Enter your credentials to access your account</CardDescription>
+        <CardDescription>Enter your credentials to access DocSign</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
@@ -63,7 +59,7 @@ export default function LoginForm() {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username"
+              placeholder="jackson"
               required
             />
           </div>
@@ -74,9 +70,10 @@ export default function LoginForm() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="••••••••"
               required
             />
+            <p className="text-xs text-muted-foreground">Hint: Username: jackson, Password: Jack@123</p>
           </div>
         </CardContent>
         <CardFooter>
